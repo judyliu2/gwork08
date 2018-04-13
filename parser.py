@@ -44,7 +44,10 @@ See the file script for an example of the file format
 ARG_COMMANDS = [ 'line', 'scale', 'move', 'rotate', 'save', 'circle', 'bezier', 'hermite', 'box', 'sphere', 'torus' ]
 
 def parse_file( fname, edges, polygons, transform, screen, color ):
-    temp_matrix = ident(new_matrix())
+    trans_matrix = []
+    temp_matrix = []
+    temp_edge = []
+    cs_stack = [ident(new_matrix())]
     f = open(fname)
     lines = f.readlines()
 
@@ -62,60 +65,77 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             #print 'args\t' + str(args)
 
         if line == 'pop':
-            pop(temp_matrix)
+            pop(cs_stack)
 
         if line == 'push':
-            push(temp_matrix)
+            push(cs_stack)
         
         if line == 'sphere':
             #print 'SPHERE\t' + str(args)
-            add_sphere(polygons,
+            add_sphere(temp_matrix,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step_3d)
+            matrix_mult(temp_matrix,pop(cs_stack))
+            draw_polygon(temp_matrix)
+            temp_matrix = []
+            
 
         elif line == 'torus':
             #print 'TORUS\t' + str(args)
-            add_torus(polygons,
+            add_torus(temp_matrix,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step_3d)
-
+            matrix_mult(temp_matrix,pop(cs_stack))
+            draw_polygon(temp_matrix)
+            temp_matrix = []
+            
         elif line == 'box':
             #print 'BOX\t' + str(args)
-            add_box(polygons,
+            add_box(temp_matrix,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
+            matrix_mult(temp_matrix,pop(cs_stack))
+            draw_polygon(temp_matrix)
+            temp_matrix = []
+            
 
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
-            add_circle(edges,
+            add_circle(temp_edge,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
+            draw_lines(temp_edge, screen, color)
 
         elif line == 'hermite' or line == 'bezier':
             #print 'curve\t' + line + ": " + str(args)
-            add_curve(edges,
+            add_curve(temp_edge,
                       float(args[0]), float(args[1]),
                       float(args[2]), float(args[3]),
                       float(args[4]), float(args[5]),
                       float(args[6]), float(args[7]),
                       step, line)
+            draw_lines(temp_edge, screen, color)
 
         elif line == 'line':
             #print 'LINE\t' + str(args)
 
-            add_edge( edges,
+            add_edge( temp_edge,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
+            matrix_mult(cs_stack, temp_edge)
+            draw_lines(temp_edge,screen,color)
 
         elif line == 'scale':
             #print 'SCALE\t' + str(args)
             t = make_scale(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, transform)
+            push(cs_stack)
+            matrix_mult(cs_stack, t)
 
         elif line == 'move':
             #print 'MOVE\t' + str(args)
             t = make_translate(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, transform)
+            push(cs_stack)
+            matrix_mult(cs_stack, t)
 
         elif line == 'rotate':
             #print 'ROTATE\t' + str(args)
@@ -127,7 +147,8 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
                 t = make_rotY(theta)
             else:
                 t = make_rotZ(theta)
-            matrix_mult(t, transform)
+            push(cs_stack)
+            matrix_mult(cs_stack, t)
 
         elif line == 'clear':
             edges = []

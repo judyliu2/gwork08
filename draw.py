@@ -5,13 +5,13 @@ from gmath import *
 
 def push(stack):
     new_stack = []
-    for i in range( 0, stack.length):
+    for i in range( 0, len(stack)):
         new_stack.append(stack[i])
-    new_stack.append(stack[stack.length-1])
+    new_stack.append(stack[len(stack)-1])
     stack = new_stack
     
 def pop(stack):
-    stack.pop()
+    return stack.pop()
 
     
     
