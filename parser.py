@@ -97,9 +97,6 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
             matrix_mult(cs_stack[-1],temp_matrix)
-            print temp_matrix
-            print len(temp_matrix)
-            print "box"
             draw_polygons(temp_matrix,screen,color)
             temp_matrix = []
             
