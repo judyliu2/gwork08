@@ -58,7 +58,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
     push(cs_stack)
     
     #print cs_stack
-    print temp_matrix
+
 
     c = 0
     while c < len(lines):
@@ -81,7 +81,12 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             add_sphere(temp_matrix,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step_3d)
-            matrix_mult(temp_matrix,cs_stack[len(cs_stack)-1])
+            i = 0
+            #while i < len(temp_matrix)-2
+             #   matrix_mult(cs_stack[len(cs_stack)-1],temp_matrix[i])
+              #  i+=3
+            matrix_mult(cs_stack[len(cs_stack)-1], temp_matrix)
+ 
             draw_polygons(temp_matrix,screen,color)
             temp_matrix = []
             
@@ -91,7 +96,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             add_torus(temp_matrix,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step_3d)
-            matrix_mult(temp_matrix,cs_stack[len(cs_stack)-1])
+            matrix_mult(cs_stack[len(cs_stack)-1],temp_matrix)
             draw_polygons(temp_matrix,screen,color)
             temp_matrix = []
             
@@ -100,7 +105,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             add_box(temp_matrix,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
-            matrix_mult(temp_matrix,cs_stack[len(cs_stack)-1])
+            matrix_mult(cs_stack[len(cs_stack)-1],temp_matrix)
             draw_polygons(temp_matrix,screen,color)
             temp_matrix = []
             
@@ -110,6 +115,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             add_circle(temp_edge,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
+            matrix_mult(cs_stack[len(cs_stack)-1], temp_edge)
             draw_lines(temp_edge, screen, color)
 
         elif line == 'hermite' or line == 'bezier':
@@ -120,6 +126,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
                       float(args[4]), float(args[5]),
                       float(args[6]), float(args[7]),
                       step, line)
+            matrix_mult(cs_stack[len(cs_stack)-1], temp_edge)
             draw_lines(temp_edge, screen, color)
 
         elif line == 'line':
@@ -128,7 +135,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
             add_edge( temp_edge,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
-            matrix_mult(cs_stack, temp_edge)
+            matrix_mult(cs_stack[len(cs_stack)-1], temp_edge)
             draw_lines(temp_edge,screen,color)
 
         elif line == 'scale':
