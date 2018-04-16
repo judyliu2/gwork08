@@ -7,14 +7,11 @@ def push(stack):
     new_stack = []
     for i in range( 0, len(stack)):
         new_stack.append(stack[i])
-    stack.append(new_stack[len(stack)-1])
-  
-    
-def pop(stack):
-    return stack.pop()
+    stack.append(new_stack[-1])
 
-def peek(stack):
-    return stack[len(stack)-1]
+def pop(stack):
+     stack.pop()
+
     
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0);
