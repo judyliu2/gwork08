@@ -68,16 +68,15 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
         if line == 'pop':
             pop(cs_stack)
 
-        if line == 'push':
+        elif line == 'push':
             push(cs_stack)
         
-        if line == 'sphere':
+        elif line == 'sphere':
             #print 'SPHERE\t' + str(args)
             add_sphere(temp_matrix,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step_3d)
             matrix_mult(cs_stack[-1], temp_matrix)
-            print "sphere"
             draw_polygons(temp_matrix,screen,color)
             temp_matrix = []
             
@@ -118,6 +117,7 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
                       float(args[4]), float(args[5]),
                       float(args[6]), float(args[7]),
                       step, line)
+            
             matrix_mult(cs_stack[-1], temp_matrix)
             draw_lines(temp_matrix, screen, color)
             temp_matrix = []
@@ -154,14 +154,13 @@ def parse_file( fname, edges, polygons, transform, screen, color ):
                 t = make_rotY(theta)
             else:
                 t = make_rotZ(theta)
+                
             matrix_mult(cs_stack[-1], t)
             cs_stack[-1] = t
 
     
         elif line == 'display' or line == 'save':
-            clear_screen(screen)
-            draw_lines(edges, screen, color)
-            draw_polygons(polygons, screen, color)
+          
 
             if line == 'display':
                 display(screen)
